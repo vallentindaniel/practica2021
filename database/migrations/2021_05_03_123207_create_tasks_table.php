@@ -20,7 +20,7 @@ class CreateTasksTable extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('board_id');
-            $table->foreign('board_id')->references('id')->on('boards');
+            $table->foreign('board_id')->references('id')->on('boards')->onDelete('cascade');// if board is deleted
             $table->string('name');
             $table->text('description');
             $table->unsignedBigInteger('assignment')->nullable();

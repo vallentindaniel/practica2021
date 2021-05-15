@@ -53,9 +53,30 @@ class BoardController extends Controller
 
     }
 
-    public function deleteBoard($id)
-    {
 
+
+     /**
+     * @param  Request  $request
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function deleteBoard(Request $request, $id): JsonResponse
+    {
+        $board = Board::find($id);
+
+        $error = '';
+        $success = '';
+
+        if ($board) {
+            $board->delete();
+
+            $success = 'Board deleted';
+        } else {
+            $error = 'Board not found!';
+        }
+
+        return response()->json(['error' => $error, 'success' => $success]);
     }
 
     /**
