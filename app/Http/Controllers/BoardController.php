@@ -61,18 +61,36 @@ class BoardController extends Controller
      *
      * @return JsonResponse
      */
-    public function deleteBoard(Request $request, $id): JsonResponse
+    public function deleteBoard($id): JsonResponse
     {
-        $board = Board::find($id);
+        $user = Auth::user();
 
-        $board->boardUsers()->delete();
+        $boards = Board::with(['user', 'boardUsers'])->get();
 
-        $board->delete();
+        //$board = Board::find($id);
+
+        if ($user->role === User::ROLE_USER) {
+            $boards = $boards->where(function ($query) use ($user) {
+                //Suntem in tabele de boards in continuare
+                $query->where('user_id', $user->id)                 // where user_id = author
+                    ->Where(function ($query) use ($id){            // delete where id(board) == $id
+                        $query->where('id', $id)
+                            ->orWhereHas('boardUsers', function ($query) use ($user) {
+                                //Suntem in tabela de board_users
+                                $query->where('user_id', $user->id);     // orWhere user_id is associate
+                            });
+
+                    });
+            });
+        }
 
         $error = '';
         $success = '';
 
         if ($board) {
+
+            $board->boardUsers()->delete(); // first delete boardUsers
+
             $board->delete();
 
             $success = 'Board deleted';
