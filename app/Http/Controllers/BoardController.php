@@ -50,8 +50,37 @@ class BoardController extends Controller
         );
     }
 
-    public function updateBoard($id)
+     /**
+     * @param  Request  $request
+     * @param $id
+     *
+     * @return JsonResponse
+     */
+    public function updateBoard(Request $request, $id)
     {
+        $error = '';
+        $success = '';
+
+        if ($request->has('id')) {
+            /** @var Board $board */
+            $board = Board::find($request->get('id'));
+
+            if ($board) {
+               $board->name = $request->get('title')
+               $board->board_users->user_id = $request->get('members');
+               $board->save();
+
+               $error = 'Success';
+            } else {
+                $error = 'Board not found!';
+            }
+        } else {
+            $error = 'Invalid request';
+        }
+
+        return redirect()->back()->with([
+            'error' => $error, 'success' => $success
+        ]);
 
     }
 
@@ -63,7 +92,7 @@ class BoardController extends Controller
      *
      * @return JsonResponse
      */
-    public function deleteBoard(Request $request,$id): JsonResponse
+    public function deleteBoard(Request $request, $id): JsonResponse
     {
         $user = Auth::user();
 

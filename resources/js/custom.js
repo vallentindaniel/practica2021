@@ -92,6 +92,31 @@ $(document).ready(function() {
     modal.find('#boardDeleteName').text(board.name);
 });
 
+$('#boardEditModal').on('shown.bs.modal', function(event) {
+    let button = $(event.relatedTarget); // Button that triggered the modal
+    let board = button.data('board');
+
+    let modal = $(this);
+
+    modal.find('#boardEditId').val(board.id);
+    modal.find('#boardEditTitle').val(board.name);
+
+
+    let board_members = board.board_users;
+    let values =[] ;
+    for(key in board_members ){
+        // console.log(board_members[key].user_id);
+         var option = document.createElement("option");
+         option.text = board_members[key].user_id;
+         document.getElementById('boardEditMembers').add(option);
+
+         values.push(board_members[key].user_id);
+    }
+   // console.log(values);
+    modal.find('#boardEditMembers').val(values);
+
+});
+
 
 $(document).ready(function() {
 
@@ -105,6 +130,25 @@ $(document).ready(function() {
         }).done(function(response) {
             if (response.error !== '') {
                 $('#boardDeleteAlert').text(response.error).removeClass('hidden');
+            } else {
+                window.location.reload();
+            }
+        });
+    });
+    $('#userEditButtonAjax').on('click', function() {
+        $('#boardEditAlert').addClass('hidden');
+
+        let id = $('#boardEditId').val();
+        let title = $('#boardEditTitle').val();
+        let members = $('#boardEditMembers').val();
+
+        $.ajax({
+            method: 'POST',
+            url: '/board/update/' + id,
+            data: {title: title, members: members}
+        }).done(function(response) {
+            if (response.error !== '') {
+                $('#boardEditAlert').text(response.error).removeClass('hidden');
             } else {
                 window.location.reload();
             }
