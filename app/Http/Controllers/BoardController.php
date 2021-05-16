@@ -7,8 +7,10 @@ use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 /**
  * Class BoardController
@@ -61,27 +63,24 @@ class BoardController extends Controller
      *
      * @return JsonResponse
      */
-    public function deleteBoard($id): JsonResponse
+    public function deleteBoard(Request $request,$id): JsonResponse
     {
         $user = Auth::user();
 
-        $boards = Board::with(['user', 'boardUsers'])->get();
-
-        //$board = Board::find($id);
-
         if ($user->role === User::ROLE_USER) {
+            $boards = Board::with(['user', 'boardUsers']);
+
             $boards = $boards->where(function ($query) use ($user) {
                 //Suntem in tabele de boards in continuare
-                $query->where('user_id', $user->id)                 // where user_id = author
-                    ->Where(function ($query) use ($id){            // delete where id(board) == $id
-                        $query->where('id', $id)
-                            ->orWhereHas('boardUsers', function ($query) use ($user) {
-                                //Suntem in tabela de board_users
-                                $query->where('user_id', $user->id);     // orWhere user_id is associate
-                            });
-
+                $query->where('user_id', $user->id)
+                    ->orWhereHas('boardUsers', function ($query) use ($user) {
+                        //Suntem in tabela de board_users
+                        $query->where('user_id', $user->id);
                     });
             });
+            $board = $boards->find($id);
+        }else{
+            $board = Board::find($id);
         }
 
         $error = '';
