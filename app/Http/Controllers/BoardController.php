@@ -65,6 +65,10 @@ class BoardController extends Controller
     {
         $board = Board::find($id);
 
+        $board->boardUsers()->delete();
+
+        $board->delete();
+
         $error = '';
         $success = '';
 
