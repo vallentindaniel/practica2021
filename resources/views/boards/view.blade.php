@@ -50,7 +50,7 @@
                             <tr>
                                 <td>{{$task->name}}</td>
                                 <td><p>{{$task->description}}</p></td>
-                                <td>{{$task->user}}</td>
+                                <td>{{$task->user->name ?? 'None'}}</td>
                                 <td>{{$task->status}}</td>
                                 <td>{{$task->created_at}}</td>
 
@@ -62,12 +62,14 @@
                                                 data-toggle="modal"
                                                 data-target="#taskEditModal">
                                             <i class="fas fa-edit"></i></button>
+                                            @if(Auth::user()->role === \App\Models\User::ROLE_ADMIN || Auth::user()->id  == ($task->user->id ?? 0) )
                                         <button class="btn btn-xs btn-danger"
                                                 type="button"
                                                 data-task="{{json_encode($task)}}"
                                                 data-toggle="modal"
                                                 data-target="#taskDeleteModal">
                                             <i class="fas fa-trash"></i></button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -80,4 +82,37 @@
 
     </section>
     <!-- /.content -->
+
+    <div class="modal fade" id="taskEditModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="boardTitle">Edit board</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger hidden" id="boardEditAlert"></div>
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="hidden" id="boardEditId" value="" />
+                            <input type="text" class="form-control" name="boardEditTitle" value="" id="boardEditTitle" placeholder="Title ...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Members:</label>
+                            <select multiple class="custom-select" name="boardEditMembers[]" values=""  id="boardEditMembers">
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="boardEditButton">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 @endsection

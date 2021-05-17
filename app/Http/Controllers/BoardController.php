@@ -161,7 +161,7 @@ class BoardController extends Controller
         $board = $board->where('id', $id)->first();
 
         $boards = $boards->select('id', 'name')->get();
-        $tasks = $tasks->where('board_id',$board->id)->get();
+        $tasks = $tasks->where('board_id',$board->id)->orderBy('created_at', 'DESC')->get();
         if (!$board) {
             return redirect()->route('boards.all');
         }
