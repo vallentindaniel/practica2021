@@ -92,6 +92,10 @@ $(document).ready(function() {
     modal.find('#boardDeleteName').text(board.name);
 });
 
+/**
+ * Edit Board Modal
+ */
+
 $('#boardEditModal').on('shown.bs.modal', function(event) {
     let button = $(event.relatedTarget); // Button that triggered the modal
     let board = button.data('board');
@@ -156,3 +160,38 @@ $(document).ready(function() {
     });
 
 });
+
+
+
+/**
+ * Edit Task
+ */
+
+
+ $('#taskEditModal').on('shown.bs.modal', function(event) {
+    let button = $(event.relatedTarget); // Button that triggered the modal
+    let task = button.data('task');
+    let users = button.data('user');
+
+    let modal = $(this);
+
+    modal.find('#taskEditId').val(task.id);
+    modal.find('#taskEditName').val(task.name);
+    modal.find('#taskEditDescription').val(task.description);
+
+    //modal.find('#taskEditAssignment').val(task.assignment);
+    //modal.find('#taskEditStatus').val(task.status);
+    console.log('users: ');
+    console.log(users);
+    for(key in users ){
+        var optionAssignment = document.createElement("option");
+        optionAssignment.text = users[key].name;
+        //optionAssignment.setAttribute('value', users[key].id);
+        document.getElementById('taskEditAssignment').add(optionAssignment);
+        console.log(users[key].name);
+    }
+
+
+});
+
+

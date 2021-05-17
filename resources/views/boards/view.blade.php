@@ -49,9 +49,17 @@
                         @foreach ($tasks as $task)
                             <tr>
                                 <td>{{$task->name}}</td>
-                                <td><p>{{$task->description}}</p></td>
+                                <td>{{$task->description}}</td>
                                 <td>{{$task->user->name ?? 'None'}}</td>
-                                <td>{{$task->status}}</td>
+                                <td>
+                                    @if($task->status == 0)
+                                    created
+                                    @elseif($task->status == 1)
+                                    in progress
+                                    @else
+                                    done
+                                    @endif
+                                </td>
                                 <td>{{$task->created_at}}</td>
 
                                 <td>
@@ -59,6 +67,7 @@
                                         <button class="btn btn-xs btn-primary"
                                                 type="button"
                                                 data-task="{{json_encode($task)}}"
+                                                data-user="{{json_encode($users)}}"
                                                 data-toggle="modal"
                                                 data-target="#taskEditModal">
                                             <i class="fas fa-edit"></i></button>
@@ -87,22 +96,39 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="boardTitle">Edit board</h4>
+                        <h4 class="modal-title" id="taskTitle">Edit task</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-danger hidden" id="boardEditAlert"></div>
+
+                        <div class="alert alert-danger hidden" id="taskEditAlert"></div>
+
+                        <input type="hidden" id="taskEditId" value="" />
+
                         <div class="form-group">
-                            <label>Title</label>
-                            <input type="hidden" id="boardEditId" value="" />
-                            <input type="text" class="form-control" name="boardEditTitle" value="" id="boardEditTitle" placeholder="Title ...">
+                            <label>Name</label>
+                            <input type="text" class="form-control" name="taskEditName" value="" id="taskEditName" placeholder="Name ...">
                         </div>
 
                         <div class="form-group">
-                            <label>Members:</label>
-                            <select multiple class="custom-select" name="boardEditMembers[]" values=""  id="boardEditMembers">
+                            <label>Description</label>
+                            <textarea class="form-control" name="taskEditDescription" id="taskEditDescription" rows="4" placeholder="Enter ..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Assignment</label>
+                            <select class="form-control" name="taskEditAssignment" id="taskEditAssignment">
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select class="form-control" name="taskEditStatus" id="taskEditStatus">
+                                <option value="0">Created</option>
+                                <option value="1">In progress</option>
+                                <option value="2">Done</option>
                             </select>
                         </div>
 
@@ -110,7 +136,7 @@
 
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="boardEditButton">Save changes</button>
+                        <button type="button" class="btn btn-primary" id="taskEditButton">Save changes</button>
                     </div>
                 </div>
             </div>

@@ -91,6 +91,8 @@ class BoardController extends Controller
 
 
 
+
+
      /**
      * @param  Request  $request
      * @param $id
@@ -148,6 +150,8 @@ class BoardController extends Controller
 
         $tasks = Task::with('user');
 
+        $users = User::select('id', 'name')->get();
+
         if ($user->role === User::ROLE_USER) {
             $boards = $boards->where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
@@ -171,7 +175,8 @@ class BoardController extends Controller
             [
                 'board' => $board,
                 'boards' => $boards,
-                'tasks' => $tasks
+                'tasks' => $tasks,
+                'users' => $users
             ]
         );
     }
