@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Board;
 use App\Models\BoardUser;
 use App\Models\User;
+use App\Models\Task;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -145,6 +146,8 @@ class BoardController extends Controller
 
         $boards = Board::query();
 
+        $tasks = Task::with('user');
+
         if ($user->role === User::ROLE_USER) {
             $boards = $boards->where(function ($query) use ($user) {
                 $query->where('user_id', $user->id)
@@ -158,7 +161,7 @@ class BoardController extends Controller
         $board = $board->where('id', $id)->first();
 
         $boards = $boards->select('id', 'name')->get();
-
+        $tasks = $tasks->where('board_id',$board->id)->get();
         if (!$board) {
             return redirect()->route('boards.all');
         }
@@ -167,7 +170,8 @@ class BoardController extends Controller
             'boards.view',
             [
                 'board' => $board,
-                'boards' => $boards
+                'boards' => $boards,
+                'tasks' => $tasks
             ]
         );
     }

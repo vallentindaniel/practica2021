@@ -34,40 +34,39 @@
                         <option @if ($selectBoard->id === $board->id) selected="selected" @endif value="{{$selectBoard->id}}">{{$selectBoard->name}}</option>
                     @endforeach
                 </select>
-                <table class="table table-bordered mt-1">
+                <table class="table table-bordered mt-3">
                     <thead>
                         <tr>
-                            <th style="width: 10px">#</th>
                             <th>Name</th>
-                            <th>User</th>
-                            <th>Members</th>
+                            <th>Description</th>
+                            <th>Assignment</th>
+                            <th>Status</th>
+                            <th>Date of Creation</th>
                             <th style="width: 40px">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($boards as $board)
+                        @foreach ($tasks as $task)
                             <tr>
-                                <td>{{$board->id}}</td>
-                                <td>
-                                    <a href="{{route('board.view', ['id' => $board->id])}}" class="link">{{$board->name}}</a>
-                                </td>
-                                <td>{{$board->user->name}}</td>
-                                <td>
-                                    {{count($board->boardUsers)}}
-                                </td>
+                                <td>{{$task->name}}</td>
+                                <td><p>{{$task->description}}</p></td>
+                                <td>{{$task->user}}</td>
+                                <td>{{$task->status}}</td>
+                                <td>{{$task->created_at}}</td>
+
                                 <td>
                                     <div class="btn-group">
                                         <button class="btn btn-xs btn-primary"
                                                 type="button"
-                                                data-board="{{json_encode($board)}}"
+                                                data-task="{{json_encode($task)}}"
                                                 data-toggle="modal"
-                                                data-target="#boardEditModal">
+                                                data-target="#taskEditModal">
                                             <i class="fas fa-edit"></i></button>
                                         <button class="btn btn-xs btn-danger"
                                                 type="button"
-                                                data-board="{{json_encode($board)}}"
+                                                data-task="{{json_encode($task)}}"
                                                 data-toggle="modal"
-                                                data-target="#boardDeleteModal">
+                                                data-target="#taskDeleteModal">
                                             <i class="fas fa-trash"></i></button>
                                     </div>
                                 </td>
