@@ -34,6 +34,47 @@
                         <option @if ($selectBoard->id === $board->id) selected="selected" @endif value="{{$selectBoard->id}}">{{$selectBoard->name}}</option>
                     @endforeach
                 </select>
+                <table class="table table-bordered mt-1">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Name</th>
+                            <th>User</th>
+                            <th>Members</th>
+                            <th style="width: 40px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($boards as $board)
+                            <tr>
+                                <td>{{$board->id}}</td>
+                                <td>
+                                    <a href="{{route('board.view', ['id' => $board->id])}}" class="link">{{$board->name}}</a>
+                                </td>
+                                <td>{{$board->user->name}}</td>
+                                <td>
+                                    {{count($board->boardUsers)}}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-xs btn-primary"
+                                                type="button"
+                                                data-board="{{json_encode($board)}}"
+                                                data-toggle="modal"
+                                                data-target="#boardEditModal">
+                                            <i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-xs btn-danger"
+                                                type="button"
+                                                data-board="{{json_encode($board)}}"
+                                                data-toggle="modal"
+                                                data-target="#boardDeleteModal">
+                                            <i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
         <!-- /.card -->

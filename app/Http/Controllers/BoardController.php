@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Board;
+use App\Models\BoardUser;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -63,10 +64,13 @@ class BoardController extends Controller
 
         if ($request->has('id')) {
             /** @var Board $board */
-            $board = Board::find($request->get('id'));
+            $boards = Board::with(['boardUsers']);
+            $board = $boards->find($request->get('id'));
 
             if ($board) {
-               $board->name = $request->get('title')
+               $board->name = $request->get('title');
+              //
+               $board_user = BoardUser::find($request->get('id'));
                $board->board_users->user_id = $request->get('members');
                $board->save();
 
